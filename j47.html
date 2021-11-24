@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cviceni</title>
+    <!-- <link rel="stylesheet" href="st2.css"> -->
+    <script>
+        function soucet(){
+            let hkol=0;let dkol=0;let skol=0;let gkol=0;
+            if(document.querySelector("#horske").checked) { hkol = parseInt(document.formik.pocethor.value)};
+            if(document.querySelector("#detske").checked) {dkol = parseInt(document.formik.pocetdet.value)};
+            if(document.querySelector("#silnicni").checked) { skol = parseInt(document.formik.pocetsil.value)};
+            if (document.querySelector("#gravel").checked) { gkol = parseInt(document.formik.pocetgra.value)};
+            let pocetdni=parseInt(document.formik.doba.value); 
+            let koef=1.0; 
+            if(document.querySelector("#stresni").checked){koef=1.05;}
+            if(document.querySelector("#tazne").checked){koef=1.1;}
+            document.f_vysledek.f_soucet.value=((hkol*500+dkol*200+skol*1500+gkol*2500)*pocetdni)*koef;
+        }
+        function kontrola(){
+            soucet(); let text="";
+            let vysl = parseInt(document.f_vysledek.f_soucet.value);
+            let limit = parseInt(document.f_kontrola.f_limit.value);
+            let rozdil = limit - vysl;
+            if (rozdil<0){text=`NESTACI, CHYBI ${0-rozdil} KORUN`};
+            if (rozdil>0){text=`S REZERVOU STACI, PREBYVA ${rozdil} KORUN`}
+            if (rozdil==0){text=`LIMIT PRESNE SOUHLASI S VYPOCTENOU CENOU`}
+            document.querySelector("#kontvysl").innerHTML=text;
+        }
+        function odeslat(){
+            let zemail=""; let odpo="";
+            zemail=document.getElementById('textx').value;
+            let result = zemail.includes("@");
+            if (result){ odpo="OBJEDNAVKA BYLA ODESLANA";}
+            if (!result){ odpo="NEPLATNÝ EMAIL - ZADEJTE PROSÍM ZNOVU";}
+            document.querySelector("#odeslani").innerHTML=odpo;
+        }
+    </script>
+    
+</head>
+<body>
+    <br>
+    <h1 style="margin-left: 100px;">PUJCOVNA - OBJEDNAVKA</h1>
+    <form style="margin-left: 100px;" name="formik">
+        <h2>Zadej typ kola: </h2>
+        <div style="margin-left: 20px;">
+        <input type="checkbox" checked="checked" id="horske" name="horske" value=500 onclick="soucet();">
+        <label for="horske">HORSKE 500Kč/den</label><input type="text" id="pocethor" value="2" ><br><br>
+        <input type="checkbox" checked="checked" id="detske" name="detske" value=200 onclick="soucet();">
+        <label for="detske">DETSKE 200Kč/den</label><input type="text" id="pocetdet" value="5" ><br><br>
+        <input type="checkbox" checked="checked" id="silnicni" name="silnicni" value=1500 onclick="soucet();">
+        <label for="silnicni">SILNICNI 1500Kč/den</label><input type="text" id="pocetsil" value="1" ><br><br>
+        <input type="checkbox" checked="checked" id="gravel" name="gravel" value=2500 onclick="soucet();">
+        <label for="gravel">GRAVEL 2500Kč/den</label><input type="text" id="pocetgra" value="1" ><br><br>
+    </div>
+        
+        <h2>Zadej dobu výpůjčky:  </h2>
+        <div style="margin-left: 20px;">
+        <label for="doba">Zvolte dobu půjčení:</label>
+        <select name="doba" id="doba" size="2" oninput="soucet();">
+          <option selected value=5>5 dní</option><br>
+          <option value=7>7 dní</option><br>
+          <option value=14>14 dní</option><br>
+          <option value=30>30 dní</option><br>
+        </select>
+    </div>
+        <br>
+        <h2>Zadej typ nosiče:  </h2>
+        <div style="margin-left: 20px;">
+        <input type="radio" id="stresni" name="nosic" value="stresni" onclick="soucet()">
+        <label for="stresni">STŘEŠNÍ NOSIČ</label><br>
+        <input type="radio" id="tazne" name="nosic" value="tazne" onclick="soucet()">
+        <label for="tazne">CYKLONOSIČ NA TAŽNÉ ZAŘÍZENÍ</label><br>
+        <input type="radio" checked="checked" id="bez" name="nosic" value="bez" onclick="soucet()">
+        <label for="bez">BEZ NOSIČE</label>
+    </div>
+    </form>
+        
+    <br><br>
+    <form style="margin-left: 100px;" name="f_vysledek">
+        <input type="button" name="Ahoj" value="SPOČÍTAT CELKOVOU CENU" onclick="soucet();">
+        <input type="text" name="f_soucet">
+    </form>
+        <br><br>
+    
+    <form style="margin-left: 100px;" name="f_kontrola">
+        <h3>Kolik jste ochoten zaplatit?</h3>
+        <div style="margin-left: 20px;">
+        <input type="text" name="f_limit"><br><br>
+        <input type="button" name="Ahoj" value="STISKNI PRO KONTROLU CENY" onclick="kontrola();">
+        <h2><div id="kontvysl"></div></h2>
+    </div>
+    </form>
+    <br>
+    <form style="margin-left: 100px;" name="formx">
+        <h3>Pro odeslání objednávky zadejte svůj email:</h3>
+        <div style="margin-left: 20px;">
+            <textarea id="textx" rows=1 cols=30></textarea>
+        <input type="button" value="ODESLAT FORMULÁŘ" onclick="odeslat();">
+        <h2><div id="odeslani"></div></h2>
+    </div>
+    </form>
+</body>
+</html>
